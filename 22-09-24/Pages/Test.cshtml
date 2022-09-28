@@ -1,0 +1,63 @@
+﻿@page
+@model TestModel
+@{
+    ViewData["Title"] = "Test nowej podstrony";
+    string[] etykietyKolumn = { "Nazwa", "Populacja", "Powierzchnia" };
+    Dictionary<
+        string,
+        (
+            string Nazwa,
+            int Populacja,
+            double Powierzchnia
+        )[]
+        > miastaPoWojewództwach = new()
+        {
+            ["Pomorskie"] = new[]{
+                ("Gdańsk",500000,12.3),
+                ("Gdynia",250000,15.6),
+                ("Sopot",30000,7.5)
+                },
+            ["Warmińsko-Mazurskie"] = new[]{
+                ("Elbląg",150000,13.2),
+                ("Olsztyn",200000,28.2)
+                },
+        };
+    (string Nazwa, int Populacja, double Powierzchnia)[] daneNaWyjście;
+    List<(string, int, double)> listaDoKonwersji = new();
+    foreach ((string, int, double)[] województwo in miastaPoWojewództwach.Values)
+        listaDoKonwersji.AddRange(województwo);
+    daneNaWyjście = listaDoKonwersji.ToArray();
+}
+
+<h1>Test nowej podstrony</h1>
+<nav>
+    <h1>Zapytanie: @Request.Query["Województwo"]</h1>
+        @{
+        foreach(string województwo in miastaPoWojewództwach.Keys)
+        { <a href="?Województwo=@województwo">@województwo</a> }
+        }
+    </nav>
+    <table>
+        <thead>
+            <tr>
+                @{
+                foreach (string etykieta in etykietyKolumn)
+                {
+                                <th>@etykieta</th>
+                }
+                }
+            </tr>
+        </thead>
+        <tbody> 
+            @{
+            foreach((string Nazwa, int Populacja, double Powierzchnia) miasto in daneNaWyjście)
+            {
+                            <tr>
+                                <td>@miasto.Nazwa</td>
+                                <td>@miasto.Populacja</td>
+                                <td>@miasto.Powierzchnia</td>
+                            </tr>
+            }
+            }
+        </tbody>
+    </table>
